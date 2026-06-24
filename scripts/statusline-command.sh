@@ -1,26 +1,4 @@
 #!/bin/bash
-# statusline-command.sh — Claude Code statusline script
-#
-# Shows: model, current dir, git branch, session name, context bar,
-#        cost, session timer, rate limits (5h / 7d).
-#
-# INSTALL
-# -------
-# 1. Copy this file somewhere (e.g. ~/.claude/statusline-command.sh)
-#
-# 2. Add to ~/.claude/settings.json:
-#
-#      "statusLine": {
-#        "type": "command",
-#        "command": "bash /Users/YOU/.claude/statusline-command.sh"
-#      }
-#
-#    Replace /Users/YOU with your home directory path.
-#
-# 3. Restart Claude Code — statusline appears immediately.
-#
-# REQUIREMENTS: bash, jq, bc, git (optional, for branch display)
-
 input=$(cat)
 
 MODEL=$(echo "$input" | jq -r '.model.display_name')
@@ -32,8 +10,8 @@ WIN_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200000'
 EFFORT=$(echo "$input" | jq -r '.effort.level // empty')
 THINKING=$(echo "$input" | jq -r '.thinking.enabled // false')
 FAST=$(echo "$input" | jq -r '.fast_mode // false')
-RATE5=$(echo "$input"  | jq -r '.rate_limits.five_hour.used_percentage // 0')
-RATE7=$(echo "$input"  | jq -r '.rate_limits.seven_day.used_percentage // 0')
+RATE5=$(echo "$input"  | jq -r '.rate_limits.five_hour.used_percentage // 0 | round')
+RATE7=$(echo "$input"  | jq -r '.rate_limits.seven_day.used_percentage // 0 | round')
 LINES_ADD=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
 LINES_DEL=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 SESSION=$(echo "$input" | jq -r '.session_name // empty')
